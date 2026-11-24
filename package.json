@@ -1,0 +1,3 @@
+{ "name": "dc-nfse-bridge", "version": "1.0.0", "type": "module", "main": "server.js",
+  "scripts": { "start": "node server.js" }, "engines": { "node": ">=20" },
+  "dependencies": { "xml-crypto": "^6.0.0", "node-forge": "^1.3.1" } }
