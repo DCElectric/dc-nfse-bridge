@@ -15,7 +15,9 @@ const key = (p12.getBags({ bagType: forge.pki.oids.pkcs8ShroudedKeyBag })[forge.
 const cert = (p12.getBags({ bagType: forge.pki.oids.certBag })[forge.pki.oids.certBag] ?? [])[0]?.cert;
 const keyPem = forge.pki.privateKeyToPem(key);
 const certB64 = forge.util.encode64(forge.asn1.toDer(forge.pki.certificateToAsn1(cert)).getBytes());
-const agent = new https.Agent({ pfx, passphrase: PFX_PASSWORD, keepAlive: true });
+// Certificados A1 antigos usam criptografia que o Node 17+ recusa no formato PFX; por isso o agente usa chave e certificados em PEM.
+const certPems = (p12.getBags({ bagType: forge.pki.oids.certBag })[forge.pki.oids.certBag] ?? []).map((b) => forge.pki.certificateToPem(b.cert));
+const agent = new https.Agent({ key: keyPem, cert: certPems.join("\n"), keepAlive: true });
 
 const HOSTS = { producao: "sefin.nfse.gov.br", homologacao: "sefin.producaorestrita.nfse.gov.br" };
 
